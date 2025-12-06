@@ -78,7 +78,7 @@ Repository = "https://github.com/siddhantkushwaha/indian-cc-statements"
 Issues = "https://github.com/siddhantkushwaha/indian-cc-statements/issues"
 
 [project.scripts]
-indian-cc-statements = "indian_cc_statements.parser:main"
+indian-cc-statements = "indian_cc_statements.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["indian_cc_statements*"]

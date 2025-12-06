@@ -9,5 +9,6 @@ __version__ = "0.1.0"
 __author__ = "Siddhant Kushwaha"
 
 from .parser import extract
+from .cli import main, print_df
 
-__all__ = ["extract"]
+__all__ = ["extract", "main", "print_df"]
