@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "indian-cc-statements"
+version = "0.1.0"
+description = "Extract transaction data from Indian bank credit card statement PDFs using OCR and AI-powered table detection"
+readme = "README.md"
+authors = [
+    {name = "Siddhant Kushwaha"}
+]
+license = "MIT"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Office/Business :: Financial",
+]
+keywords = ["pdf", "bank", "statements", "ocr", "transactions", "parser", "credit-card", "india"]
+
+dependencies = [
+    "certifi>=2025.11.12",
+    "charset-normalizer>=3.4.4",
+    "Deprecated>=1.3.1",
+    "easyocr>=1.7.2",
+    "filelock>=3.20.0",
+    "fsspec>=2025.12.0",
+    "huggingface-hub>=0.36.0",
+    "idna>=3.11",
+    "imageio>=2.37.2",
+    "Jinja2>=3.1.6",
+    "lazy_loader>=0.4",
+    "lxml>=6.0.2",
+    "MarkupSafe>=3.0.3",
+    "networkx>=3.6",
+    "numpy>=2.2.0",
+    "opencv-python>=4.12.0",
+    "packaging>=25.0",
+    "pandas>=2.3.3",
+    "pdf2image>=1.17.0",
+    "pikepdf>=10.0.2",
+    "pillow>=12.0.0",
+    "pyclipper>=1.4.0",
+    "python-bidi>=0.6.7",
+    "python-dateutil>=2.9.0",
+    "pytz>=2025.2",
+    "PyYAML>=6.0.3",
+    "regex>=2025.11.3",
+    "requests>=2.32.5",
+    "safetensors>=0.7.0",
+    "scikit-image>=0.25.2",
+    "scipy>=1.16.3",
+    "shapely>=2.1.2",
+    "torch>=2.9.0",
+    "torchvision>=0.24.0",
+    "tqdm>=4.67.1",
+    "transformers>=4.57.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/siddhantkushwaha/indian-cc-statements"
+Repository = "https://github.com/siddhantkushwaha/indian-cc-statements"
+Issues = "https://github.com/siddhantkushwaha/indian-cc-statements/issues"
+
+[project.scripts]
+indian-cc-statements = "indian_cc_statements.parser:main"
+
+[tool.setuptools.packages.find]
+include = ["indian_cc_statements*"]
+exclude = ["tests*", "venv*"]
+

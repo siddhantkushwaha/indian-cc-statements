@@ -1,0 +1,18 @@
+venv
+.venv
+**.csv
+**.json
+statement_summaries
+**__pycache__**
+**.DS_Store**
+**.idea
+
+# Package build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# PyPI
+.pypirc
