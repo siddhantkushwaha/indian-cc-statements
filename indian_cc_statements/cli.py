@@ -74,6 +74,7 @@ def main():
             expand_y=0.10,
             confidence_threshold=0.5,
             passwords=passwords,
+            temp_dir="/tmp",
         )
 
         if result:

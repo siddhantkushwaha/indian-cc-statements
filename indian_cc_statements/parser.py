@@ -18,7 +18,6 @@ import os
 import json
 import re
 import argparse
-import tempfile
 import warnings
 from dateutil import parser as date_parser
 from typing import List, Optional, Tuple
@@ -132,7 +131,7 @@ def is_pdf_encrypted(pdf_path: str) -> bool:
         return False
 
 
-def unlock_pdf(pdf_path: str, passwords: List[str]) -> Optional[str]:
+def unlock_pdf(pdf_path: str, output_dir: str, passwords: List[str]) -> Optional[str]:
     """
     Try to unlock PDF with password list.
 
@@ -147,8 +146,9 @@ def unlock_pdf(pdf_path: str, passwords: List[str]) -> Optional[str]:
             # Try opening with this password
             with pikepdf.open(pdf_path, password=password) as pdf:
                 # Success! Save unlocked version to temp file
-                temp_fd, temp_path = tempfile.mkstemp(suffix=".pdf")
-                os.close(temp_fd)
+                temp_path = os.path.join(
+                    output_dir, f"unlocked_{os.path.basename(pdf_path)}"
+                )
                 pdf.save(temp_path)
                 print(f"Successfully unlocked PDF with password: {'*' * len(password)}")
                 return temp_path
@@ -162,7 +162,9 @@ def unlock_pdf(pdf_path: str, passwords: List[str]) -> Optional[str]:
     return None
 
 
-def prepare_pdf(pdf_path: str, passwords: Optional[List[str]] = None) -> Optional[str]:
+def prepare_pdf(
+    pdf_path: str, output_dir: str, passwords: Optional[List[str]] = None
+) -> Optional[str]:
     """
     Prepare PDF for processing - unlock if needed.
 
@@ -182,7 +184,7 @@ def prepare_pdf(pdf_path: str, passwords: Optional[List[str]] = None) -> Optiona
         return None
 
     # Try to unlock with password list
-    return unlock_pdf(pdf_path, passwords)
+    return unlock_pdf(pdf_path, output_dir, passwords)
 
 
 # ============================================================================
@@ -661,6 +663,7 @@ def extract(
     expand_y: float = 0.10,
     confidence_threshold: float = 0.5,
     passwords: Optional[List[str]] = None,
+    temp_dir: str = "/tmp",
 ):
     """
     Extract transaction data from PDF credit card statement.
@@ -671,13 +674,20 @@ def extract(
         expand_y: Vertical expansion fraction (0.10 = 10%)
         confidence_threshold: Table detection confidence (0.0 to 1.0)
         passwords: List of passwords to try if PDF is encrypted (optional)
+        temp_dir: Directory to save temporary files (default: /tmp)
 
     Returns:
         List of all extracted transactions
     """
 
+    output_dir = os.path.join(
+        temp_dir,
+        f"pdf_extract_{os.path.basename(pdf_path).lower().replace('.pdf', '')}",
+    )
+    os.makedirs(output_dir, exist_ok=True)
+
     # Prepare PDF - unlock if needed
-    usable_pdf_path = prepare_pdf(pdf_path, passwords)
+    usable_pdf_path = prepare_pdf(pdf_path, output_dir, passwords)
     if not usable_pdf_path:
         print(f"Cannot process PDF - failed to unlock: {pdf_path}")
         return []
@@ -692,7 +702,7 @@ def extract(
 
         # Process each page
         all_data = []
-        output_dir = tempfile.mkdtemp(prefix="pdf_extract_")
+        os.makedirs(output_dir, exist_ok=True)
         for page_num, image in enumerate(images):
             page_data = process_page(
                 image,
