@@ -17,7 +17,6 @@ Requirements:
 import os
 import json
 import re
-import argparse
 import warnings
 from dateutil import parser as date_parser
 from typing import List, Optional, Tuple
@@ -713,6 +712,11 @@ def extract(
                 expand_x,
                 expand_y,
             )
+
+            # If this page has no data, next pages won't have data either
+            if len(page_data) == 0:
+                break
+
             all_data.extend(page_data)
 
         return all_data
