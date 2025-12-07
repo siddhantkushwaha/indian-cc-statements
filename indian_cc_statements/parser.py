@@ -661,7 +661,7 @@ def extract(
     pdf_path: str,
     expand_x: float = 0.15,
     expand_y: float = 0.10,
-    confidence_threshold: float = 0.5,
+    confidence_threshold: float = 0.4,
     passwords: Optional[List[str]] = None,
     temp_dir: str = "/tmp",
 ):

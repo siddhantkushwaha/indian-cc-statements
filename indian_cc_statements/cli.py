@@ -47,6 +47,35 @@ def print_df(df):
                 print(line)
 
 
+def handle_pdf(pdf_path, passwords):
+    pdf_name = os.path.basename(pdf_path)
+
+    result = extract(
+        pdf_path,
+        expand_x=0.15,
+        expand_y=0.10,
+        confidence_threshold=0.4,
+        passwords=passwords,
+        temp_dir="tmp",
+    )
+
+    if result:
+        data_dir = os.path.join("statement_summaries", pdf_name)
+        os.makedirs(data_dir, exist_ok=True)
+
+        # Save consolidated results as json
+        with open(os.path.join(data_dir, "summary.json"), "w") as f:
+            json.dump(result, f, indent=4)
+
+        # Save consolidated results as csv
+        df = pd.DataFrame(result)
+        df.to_csv(os.path.join(data_dir, "summary.csv"), index=False)
+
+        print_df(df)
+    else:
+        print(f"No transactions found in {pdf_path}")
+
+
 def main():
     args = argparse.ArgumentParser()
     args.add_argument(
@@ -66,32 +95,15 @@ def main():
     passwords = args.password.split(",") if args.password else []
 
     for pdf_path in pdf_paths:
-        pdf_name = os.path.basename(pdf_path)
-        print(pdf_path)
-        result = extract(
-            pdf_path,
-            expand_x=0.15,
-            expand_y=0.10,
-            confidence_threshold=0.5,
-            passwords=passwords,
-            temp_dir="/tmp",
-        )
-
-        if result:
-            data_dir = os.path.join("statement_summaries", pdf_name)
-            os.makedirs(data_dir, exist_ok=True)
-
-            # Save consolidated results as json
-            with open(os.path.join(data_dir, "summary.json"), "w") as f:
-                json.dump(result, f, indent=4)
-
-            # Save consolidated results as csv
-            df = pd.DataFrame(result)
-            df.to_csv(os.path.join(data_dir, "summary.csv"), index=False)
-
-            print_df(df)
+        if os.path.isfile(pdf_path):
+            handle_pdf(pdf_path, passwords)
+        elif os.path.isdir(pdf_path):
+            for root, dirs, files in os.walk(pdf_path):
+                for file in files:
+                    if file.endswith(".pdf"):
+                        handle_pdf(os.path.join(root, file), passwords)
         else:
-            print(f"No transactions found in {pdf_path}")
+            print(f"Invalid path: {pdf_path}")
 
 
 if __name__ == "__main__":

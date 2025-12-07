@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "indian-cc-statements"
-version = "0.1.0"
+version = "0.1.1"
 description = "Extract transaction data from Indian bank credit card statement PDFs using OCR and AI-powered table detection"
 readme = "README.md"
 authors = [
